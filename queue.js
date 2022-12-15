@@ -1,61 +1,37 @@
 
-class CircularQueue {
-    #list;
+class Queue {
+    #list = [];
     #capacity;
-    #tail = -1;
-    #head = -1;
-    #size = 0;
 
     constructor(capacity) {
-        this.#capacity = Math.max(Number(capacity), 0) || 10;
-        this.#list = Array(this.#capacity).fill(null);
+        this.#capacity = Math.max(Number(capacity), 0) || null;
     }
 
     get size() {
-        return this.#size;
+        return this.#list.length;
     }
 
     get isFull() {
-        return this.#size === this.#capacity;
+        return this.#capacity !== null && this.size === this.#capacity;
     }
 
     get isEmpty() {
-        return this.#size === 0;
+        return this.size === 0;
     }
 
     enqueue(item) {
-        if (!this.isFull) {
-            this.#tail = (this.#tail + 1) % this.#capacity
-            this.#list[this.#tail] = item;
-            this.#size += 1;
-
-            if (this.#head === -1) {
-                this.#head = this.#tail
-            }
+        if (this.#capacity === null || this.size < this.#capacity) {
+            return this.#list.push(item)
         }
-
         return this.size
     }
 
     dequeue() {
-        let item = null;
-
-        if (!this.isEmpty) {
-            item = this.#list[this.#head];
-            this.#list[this.#head] = null;
-            this.#head = (this.#head + 1) % this.#capacity;
-            this.#size -= 1;
-
-            if(!this.size) {
-                this.#head = -1;
-                this.#tail = -1;
-            }
-        }
-        return item
+        return this.#list.shift()
     }
 
     peek() {
-        return this.#list[this.#head];
+        return this.#list[0];
     }
 
     print() {
@@ -63,22 +39,19 @@ class CircularQueue {
     }
 }
 
-const cq = new CircularQueue(5);
+const qu = new Queue();
 
-cq.enqueue(10)
-cq.enqueue(20)
-cq.enqueue(30)
-cq.enqueue(40)
+qu.enqueue(12);
+qu.enqueue(6);
+qu.enqueue(24);
+qu.enqueue(50);
 
-cq.dequeue()
-cq.dequeue()
-cq.dequeue()
+// qu.dequeue()
 
-cq.enqueue(50)
-cq.enqueue(60)
-// cq.enqueue(70)
-// cq.enqueue(80)
+qu.print();
 
-console.log(cq.peek());
 
-cq.print()
+qu.dequeue()
+
+qu.print()
+// console.log(qu.dequeue());

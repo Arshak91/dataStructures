@@ -5,77 +5,69 @@ class PriorityQueue {
 
     constructor(capacity) {
         this.#capacity = Math.max(Number(capacity), 0) || null;
-        this.#list = Array(this.#capacity).fill(null);
     }
 
     get size() {
-        return this.#size;
-    }
-
-    get isFull() {
-        return this.#size === this.#capacity;
+        return this.#list.length;
     }
 
     get isEmpty() {
-        return this.#size === 0;
+        return this.size === 0;
     }
 
-    enqueue(item) {
-        if (!this.isFull) {
-            this.#tail = (this.#tail + 1) % this.#capacity
-            this.#list[this.#tail] = item;
-            this.#size += 1;
+    get isFull() {
+        return this.#capacity !== null && this.size === this.#capacity;
+    }
 
-            if (this.#head === -1) {
-                this.#head = this.#tail
+    enqueue(item, priority = 0) {
+        priority = Math.max(Number(priority), 0)
+        const element = {item, priority};
+
+        if (this.isEmpty || element.priority >= this.#list[this.size - 1].priority ) {
+            this.#list.push(element)
+        } else {
+            for (const index in this.#list) {
+                if (element.priority < this.#list[index].priority) {
+                    this.#list.splice(index, 0, element);
+                    break;
+                }
             }
         }
 
-        return this.size
+        return this.size;
     }
 
     dequeue() {
-        let item = null;
-
-        if (!this.isEmpty) {
-            item = this.#list[this.#head];
-            this.#list[this.#head] = null;
-            this.#head = (this.#head + 1) % this.#capacity;
-            this.#size -= 1;
-
-            if(!this.size) {
-                this.#head = -1;
-                this.#tail = -1;
-            }
-        }
-        return item
+        const element = this.#list.shift();
+        return element ? element.item : null;
     }
 
     peek() {
-        return this.#list[this.#head];
+        const element =  this.#list[0];
+        return element ? element.item : null;
     }
 
     print() {
-        console.log(this.#list);
+        console.log(this.#list.map(el => el.item));
     }
 }
 
-const cq = new CircularQueue(5);
+const pq = new PriorityQueue();
 
-cq.enqueue(10)
-cq.enqueue(20)
-cq.enqueue(30)
-cq.enqueue(40)
 
-cq.dequeue()
-cq.dequeue()
-cq.dequeue()
+pq.enqueue(12)
+pq.enqueue(24, 3)
+pq.enqueue(20, 2)
+pq.enqueue(45, 3)
+pq.enqueue(16, 1)
 
-cq.enqueue(50)
-cq.enqueue(60)
-// cq.enqueue(70)
-// cq.enqueue(80)
+pq.dequeue()
 
-console.log(cq.peek());
+console.log(pq.dequeue());
 
-cq.print()
+pq.print();
+
+// console.log(pq.isEmpty());
+// console.log(pq.isFull());
+
+console.log(pq.print());
